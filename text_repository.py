@@ -1,6 +1,6 @@
 from textblob import TextBlob
 
-raven_text = TextBlob("""Once upon a midnight dreary, while I pondered, weak and weary
+raven_text = ("""Once upon a midnight dreary, while I pondered, weak and weary
 Over many a quaint and curious volume of forgotten lore --
 While I nodded, nearly napping, suddenly there came a tapping,
 As of someone gently rapping, rapping at my chamber door.
@@ -14,7 +14,7 @@ For the rare and radiant maiden whom the angels name Lenore--
 Nameless here for evermore.""")
 
 
-hamlet_text = TextBlob("""To be, or not to be--that is the question:
+hamlet_text = ("""To be, or not to be--that is the question:
 Whether 'tis nobler in the mind to suffer
 The slings and arrows of outrageous fortune
 Or to take arms against a sea of troubles
