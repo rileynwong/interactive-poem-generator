@@ -1,13 +1,11 @@
 from textblob import TextBlob
 from corpus import Corpus
 import text_repository
+
 def main():
     start_program_loop()
-    map_texts_to_sentiments()
+    #map_texts_to_sentiments()
     return
-
-
-
 
 def start_program_loop():
     poem = ""
@@ -19,9 +17,8 @@ def start_program_loop():
     while x < 10:
         raw_emotion_scalar = get_sentiment_from_ben()
         corpus = get_corpus_by_sentiment(raw_emotion_scalar, sentiment_mapping, corpi)
-        if prev_word != "":
-            prev_word = current_line[-1]
-        current_line = generate_line(corpus, prev_word)
+
+        current_line, prev_word = generate_line(corpus, prev_word)
         poem += current_line
         print(current_line)
         x += 1
@@ -49,7 +46,6 @@ def make_dictionary_from_ngram(ngram_list):
 
 def get_sentiment_from_ben():
     return 10
-
 
 def generate_line(corpus, prev_word):
     return corpus.get_line(prev_word)
