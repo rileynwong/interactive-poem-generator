@@ -1,5 +1,6 @@
 __author__ = 'piatskia'
 from textblob import TextBlob
+import random
 
 def get_num_lines():
     return 5
@@ -8,7 +9,8 @@ class Corpus:
     def __init__(self, text):
         self.text_blob = TextBlob(text)
         self.n_gram = self.text_blob.ngrams(3)
-        self.n_gram_dict = {x[0]: x[1:] for x in self.n_gram}
+        # key: sentiment, wordlist
+        self.n_gram_dict = {x[0]: (TextBlob(x[0]).sentiment, x[1:]) for x in self.n_gram}
         self.sentiment = self.text_blob.sentiment
 
     def get_line(self, head_word):
@@ -20,7 +22,14 @@ class Corpus:
         return line, prev_word
 
     # returns next word
-    def get_next_word(self, prev_word):
-        if prev_word == "":
-            prev_word = self.n_gram[0][0]
-        return self.n_gram_dict[prev_word][0]
+    def get_next_word(self, keyword):
+
+        # keep trying until we get a key with values
+        while not keyword in self.n_gram_dict:
+            # get random word
+            keyword = random.choice(self.n_gram_dict.keys())
+
+        wordlist = self.n_gram_dict[keyword][1]
+        return random.choice(wordlist)
+
+
