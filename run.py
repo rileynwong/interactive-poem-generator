@@ -20,13 +20,15 @@ def main():
     return
 
 def loop():
-    poem, last_word = "", "" # initialize empty poem
+    last_word = ""
 
     for _ in range(10): # while True
         sentiment_val = get_sentiment_value()
         current_line, last_word = generate_line(sentiment_val, last_word)
 
-        poem += current_line
+        if is_noun(last_word):
+            current_line += "\n"
+
         print current_line
     return
 
@@ -35,7 +37,10 @@ def parse_texts():
     texts_dir = getcwd() + "/texts"
     for dir_entry in listdir(texts_dir):
         text = open(texts_dir + "/" + dir_entry)
-        text_to_ngrams(text.read())
+        contents = text.read()
+        contents = contents.lower()
+        text_to_ngrams(contents)
+        text.close()
     return
 
 def text_to_ngrams(text):
@@ -59,6 +64,9 @@ def parse_ngrams(ngrams):
             all_words_dict[word] = new_word
     return
 
+def is_noun(word):
+    return TextBlob(word).tags[0][1] == 'NN'
+
 ### Generating poetry
 # Returns the next line of poetry
 def generate_line(sentiment, start_word):
@@ -68,7 +76,7 @@ def generate_line(sentiment, start_word):
         line += " " + next_phrase
         last_word = next_phrase.split()[-1]
         next_phrase = get_next_phrase(sentiment, last_word)
-    return line, last_word
+    return str(line), last_word
 
 def get_next_phrase(sentiment, word):
 
@@ -90,7 +98,7 @@ def get_sentiment_value():
 
 ### Helpers, Configuration, Random
 def rand_num_lines():
-    return random.randint(2, 4)
+    return random.randint(1, 3)
 
 ### Main
 if __name__ == "__main__":
