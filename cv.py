@@ -6,6 +6,19 @@ cmd_text = 'cd {} && ./emo_detector_cli svm ../resources/haarcascade_frontalface
            '../resources/haarcascade_eye.xml 52 52 1 5 8 ../svm_1vsallext_1_5_8_95c2eb0b58/*'\
            .format(assets_dir)
 
+emotion_to_polarity = {
+    'neutral': 0,
+    'anger': -1,
+    'contempt': -1,
+    'disgust': -1,
+    'fear': -1,
+    'happy': 1,
+    'sadness': -1,
+    'surprise': 1,
+    'others': 0,
+    'unknown': 0,
+}
+
 
 class EmotionRecognizer:
     def __init__(self):
@@ -23,9 +36,11 @@ class EmotionRecognizer:
         cmd.stdout.readline()  # Processing <filepath>
         result = timeout(cmd.stdout.readline, timeout_duration=1)
         if result is not None:
+            # map the raw result to a polarity score
             result = result.replace('\n', '')
             result = result[result.find(': ') + 2:]
             result = result[:result.find(' ')]
+            result = emotion_to_polarity[result]
             cmd.stdout.readline()
         return result
 
