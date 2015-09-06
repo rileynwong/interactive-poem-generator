@@ -16,12 +16,12 @@ def index():
 
 @app.route('/image_upload', methods=['POST'])
 def file_upload():
-    base_64 = request.get_data()
-    temp_file = tempfile.NamedTemporaryFile(mode='w+b', suffix='.jpg')
-    temp_file.write(base_64.decode('base64'))
+    file = request.files
+    path = '.imagepath'
+    file.save()
 
     recognizer = cv.EmotionRecognizer()
-    recognizer.get_emotion_from_image(temp_file)
+    score = recognizer.get_emotion_from_image(path)
     return 'OK', 200
 
 @app.route('/poem')

@@ -25,9 +25,8 @@ class EmotionRecognizer:
         self.cmd = new_command()
         self.cmd.stdout.readline()  # 'Insert the image file path:'
 
-    def get_emotion_from_image(self, named_file):
+    def get_emotion_from_image(self, filepath):
         cmd = self.cmd
-        filepath = file.name
 
         if cmd.poll() is not None:
             self.cmd = new_command()
