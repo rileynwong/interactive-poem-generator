@@ -1,12 +1,20 @@
-#!/usr/bin/env python
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
+import numpy
 
-# emulated camera
-from flask import render_template
-import ling
+import cv, tempfile, ling
 
 app = Flask(__name__)
 
+past_emotions = []
+
+## Functions
+def get_moving_average():
+    if len(past_emotions) > 4:
+        return numpy.mean(past_emotions)
+    elif past_emotions:
+        return past_emotions[0]
+    else:
+        return 1.0
 
 # Views
 @app.route('/')
@@ -14,23 +22,24 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-def gen(camera):
-    """Video streaming generator function."""
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+@app.route('/image_upload', methods=['POST'])
+def file_upload():
+    base_64 = request.get_data()
+    temp_file = tempfile.NamedTemporaryFile(mode='w+b', suffix='.jpg')
+    temp_file.write(base_64.decode('base64'))
 
-@app.route('/video_feed')
-def video_feed():
-    """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(Camera()),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    recognizer = cv.EmotionRecognizer()
+
+    sentiment_val = recognizer.get_emotion_from_image(temp_file)
+    global past_emotions
+    past_emotions.append(sentiment_val)
+
+    return 'OK', 200
 
 @app.route('/poem')
 def generate_line():
     # TODO replace dummy val for sentiment
-    return ling.get_next_line(1.0)
+    return ling.get_next_line(get_moving_average())
 
 if __name__ == '__main__':
     app.run(debug=True)
