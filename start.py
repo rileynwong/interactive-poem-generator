@@ -1,6 +1,12 @@
 from textblob import TextBlob
+from os import listdir
+from os import getcwd
+from os.path import isfile, join
 from corpus import Corpus
-import text_repository
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 
 def main():
     start_program_loop()
@@ -8,9 +14,13 @@ def main():
     return
 
 def start_program_loop():
+    all_texts = []
+    for dir_entry in listdir(getcwd()+ "/texts"):
+        file = open(getcwd() + "/texts/" + dir_entry)
+        all_texts.append(file.read())
     poem = ""
     x = 0
-    corpi = initialize_all_corpi(text_repository.all_texts)
+    corpi = initialize_all_corpi(all_texts)
     sentiment_mapping = map_corpi_to_sentiments(corpi)
     prev_word = ""
     current_line = ""
@@ -29,7 +39,7 @@ def initialize_all_corpi(all_texts):
 
 
 def get_corpus_by_sentiment(raw_emotion_scalar, sentiment_mapping, corpi):
-    return corpi[0]
+    return corpi[2]
 
 
 def map_corpi_to_sentiments(corpi):
