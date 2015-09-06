@@ -10,7 +10,6 @@ sys.setdefaultencoding('utf8')
 
 def main():
     start_program_loop()
-    #map_texts_to_sentiments()
     return
 
 def start_program_loop():
@@ -21,7 +20,6 @@ def start_program_loop():
     poem = ""
     x = 0
     corpi = initialize_all_corpi(all_texts)
-    sentiment_mapping = map_corpi_to_sentiments(corpi)
     prev_word = ""
     current_line = ""
     while x < 10:
@@ -32,7 +30,6 @@ def start_program_loop():
         poem += current_line
         print(current_line)
         x += 1
-
 
 def initialize_all_corpi(all_texts):
     return map(lambda x: Corpus(x), all_texts)
@@ -60,5 +57,3 @@ def get_sentiment_from_ben():
 def generate_line(corpus, prev_word):
     return corpus.get_line(prev_word)
 
-if __name__ == "__main__":
-    main()
