@@ -23,6 +23,9 @@ class EmotionRecognizer:
         cmd.stdout.readline()  # Processing <filepath>
         result = timeout(cmd.stdout.readline, timeout_duration=1)
         if result is not None:
+            result = result.replace('\n', '')
+            result = result[result.find(': ') + 2:]
+            result = result[:result.find(' ')]
             cmd.stdout.readline()
         return result
 
@@ -54,3 +57,4 @@ def timeout(func, args=(), kwargs={}, timeout_duration=1, default=None):
         signal.alarm(0)
 
     return result
+
