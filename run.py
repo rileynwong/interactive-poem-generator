@@ -8,11 +8,7 @@ from textblob import TextBlob
 from word import Word
 
 
-reload(sys)
-sys.setdefaultencoding('utf8')
-
-all_words_dict = {} # dictionary maps word to Word
-NGRAM_SIZE = 4
+last_word = ""
 
 def main():
     parse_texts()
@@ -20,19 +16,26 @@ def main():
     return
 
 def loop():
-    last_word = ""
-
     for _ in range(10): # while True
         sentiment_val = get_sentiment_value()
-        current_line, last_word = generate_line(sentiment_val, last_word)
-
-        if is_noun(last_word):
-            current_line += "\n"
-
-        print current_line
+        get_next_line(sentiment_val)
     return
 
-### Parsing
+def get_next_line(sentiment_val):
+    global last_word
+    if not last_word:
+        last_word = ""
+
+    current_line, last_word = generate_line(sentiment_val, last_word)
+
+    if is_noun(last_word):
+        current_line += "\n"
+
+    print current_line
+    return current_line
+
+
+### Parsing Functions
 def parse_texts():
     texts_dir = getcwd() + "/texts"
     for dir_entry in listdir(texts_dir):
@@ -53,7 +56,7 @@ def parse_ngrams(ngrams):
     for ngram in ngrams:
         word = ngram[0]
         phrase = " ".join(ngram[1:])
-        phrase_sentiment = TextBlob(phrase).sentiment
+        phrase_sentiment = TextBlob(phrase).sentiment.polarity
 
         if word in all_words_dict:
             # word is in dictionary, add phrase to word.sentiment_ngrams_dict
@@ -66,6 +69,7 @@ def parse_ngrams(ngrams):
 
 def is_noun(word):
     return TextBlob(word).tags[0][1] == 'NN'
+
 
 ### Generating poetry
 # Returns the next line of poetry
@@ -88,19 +92,33 @@ def get_next_phrase(sentiment, word):
     phrase = get_closest_sentiment_phrase(sentiment, word)
     return phrase
 
-def get_closest_sentiment_phrase(sentiment, word):
-    closest_key = all_words_dict[word].sentiment_ngrams_dict.keys()[0] # TODO
+def get_closest_sentiment_phrase(sentiment_val, word):
+    # each key is a sentiment value between -1.0 and 1.0
+    keys = all_words_dict[word].sentiment_ngrams_dict.keys()
+    closest_key = min(keys, key=lambda x:abs(x-sentiment_val))
     phrase = all_words_dict[word].sentiment_ngrams_dict[closest_key]
     return phrase
 
 def get_sentiment_value():
-    return 1.0 # TODO
+    return 1.0 # TODO - hook up with ben's side
+
 
 ### Helpers, Configuration, Random
 def rand_num_lines():
     return random.randint(1, 3)
 
+
+###
+reload(sys)
+sys.setdefaultencoding('utf8')
+NGRAM_SIZE = 4
+
+all_words_dict = {} # dictionary maps word to Word
+parse_texts()
+
+
 ### Main
 if __name__ == "__main__":
     main()
+
 
