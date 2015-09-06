@@ -1,6 +1,6 @@
 Webcam.set({
-        width: 600,
-        height: 480,
+        width: 320,
+        height: 240,
         flip_horiz: true,
     });
 Webcam.attach( '#my_camera' );
@@ -12,9 +12,9 @@ function take_snapshot() {
             // Upload complete!
             // 'code' will be the HTTP response code from the server, e.g. 200
             // 'text' will be the raw response content
-            console.log(text);
+            appendLine(text);
+            scrollBottom();
         } );
-
     });
 }
 Webcam.on("live", function() {
@@ -31,23 +31,4 @@ function scrollBottom(){
 function appendLine(text) {
     $("#poetry").append(text + "<br>");
 }
-
-// send request to server
-// get back a line of poetry
-function poll() {
-    setTimeout(function() {
-        $.ajax({
-            url: "/poem",
-            type: "GET",
-            success: function(data) {
-                appendLine(data);
-                scrollBottom();
-            },
-            complete: poll,
-            timeout: 2000
-        })
-    }, 2000);
-};
-
-poll();
 
