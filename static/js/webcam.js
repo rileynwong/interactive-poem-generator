@@ -255,7 +255,7 @@ var Webcam = {
 		}
 		else if (name == 'error') {
 			// default error handler if no custom one specified
-			alert("Webcam.js Error: " + args[0]);
+			//alert("Webcam.js Error: " + args[0]);
 		}
 		
 		return false; // no hook defined
