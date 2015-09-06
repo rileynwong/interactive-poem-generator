@@ -1,0 +1,133 @@
+\section{Project organization and usage}
+
+The project is managed by \emph{CMake} and its organized as following:
+
+\begin{verbatim}
+
+src
+  \-->dataset      Scripts for dataset management
+  \-->detector     Multiclass detector and preprocessor
+  \-->facedetector Face cropping, adjusting and registration
+  \-->gaborbank    Generation of gabor filters and image filtering
+  \-->gui          Graphical interfaces and interaction with videos and webcam
+  \-->training     2-class training and prediction
+  \-->utils        String and IO utilities, CSV supports, and so on..
+doc                Documentation (doxigen)
+report             Report sources
+resources          Containing third party resources (eg. OpenCV haar classifiers)
+assets             Binary folder
+
+\end{verbatim}
+
+In order to configure, compile and run this project one must have:
+
+\begin{itemize}
+  \item CMake $\ge$ 2.8
+  \item Opencv $\ge$ 2.4.5
+  \item Python $\ge$ 2.7
+\end{itemize}
+
+Although python is not strictly required, the usage of the individual tools
+without python is not recommended.
+
+\subsection{Compilation on Linux}
+
+Just like any other \emph{CMake} projects, the first step is to initialize the
+compilation by doing:
+
+\begin{verbatim}
+mkdir build
+cd build
+cmake ../
+\end{verbatim}
+
+The \code{make install} command, or equivalent, compiles and moves binaries and
+scripts in the \code{assets} directory.
+
+\subsection{Compilation on Windows}
+
+We have tested the compilation and usage on windows 8.1 using Visual Studio 12
+64bit. However it should work with any version:
+
+\begin{enumerate}
+  \item Using CMake or CMakeGUI, select emotime as source folder and configure.
+  \item If it complains about setting the variable \code{OpenCV\_DIR} set it to the appropriate path so that:
+    \begin{enumerate}
+      \item \code{C:/path/to/opencv/dir/} contains the libraries (\code{*.lib})
+      \item \code{C:/path/to/opencv/dir/include} contains the include
+        directories (opencv and opencv2). \textbf{IF the include directory is
+        not in the right position} the project will likely not be able to
+        compile due to missing reference to \code{opencv2/opencv} or similar.
+    \end{enumerate}
+  \item Then generate the project and compile the project \code{ALL\_BUILD}
+  \item If the compilation succeeded, compile the project \code{INSTALL}
+  \item Now all scripts, configuration and tools should be in the directory
+    \code{assets} in the project source directory.
+\end{enumerate}
+
+\textbf{Note:} in order to execute the CLI programs, the opencv dlls must be in
+the \code{PATH}.
+
+\subsection{Usage}
+
+The general usage is to initialize the \code{dataset} directory, fill it with
+images from the \code{CK} database, train the classifiers with those images and
+launch the GUI\@. Algorithm parameters are set using a configuration file. An
+example of the configuration file is \code{assets/example\_dataset.cfg}. This file
+will be overwritten at every \code{make install}.
+
+By default python scripts search the configuration file named
+\code{./dataset.cfg}, but with the parameter \code{--cfg /path/to/cfg} any
+configuration file can be used.
+
+\subsubsection*{Initialize and fill a dataset}
+
+\begin{verbatim}
+python2 datasetInit.py --cfg dataset.cfg /path/to/dataset
+
+python2 datasetFillCK.py /path/to/dataset \
+                         /path/to/cohn/kanade \
+                         /path/to/cohn/kanade/emotions
+\end{verbatim}
+
+\subsubsection*{Classifier training}
+
+Your console console working directory must be the \code{assest} directory,
+with all the scripts and clis present. Assuming your configuration is in the
+assest directory, named \code{dataset.cfg}, the script \code{train\_models.py}
+automatize the training procedure. \textbf{Remember} this script must be called
+inside the \code{assest} directory.
+
+\begin{verbatim}
+python ./train_models.py --cfg dataset.cfg --mode svm\
+                    --prep-train-mode {1vsAll, 1vsAllExt, 1vs1}\
+                          [--eye-correction]\
+                          /path/to/dataset
+\end{verbatim}
+
+Or also (in order):
+
+\begin{verbatim}
+python datasetCropFaces.py [--eye-correction] /path/to/dataset
+
+python datasetFeatures.py /path/to/dataset
+
+python datasetPrepTrain.py --mode {1vs1,1vsAll,1vsAllExt}\
+                                         /path/to/dataset
+
+python datasetTrain.py --mode svm /path/to/dataset
+
+python datasetVerifyPrediction.py --mode svm\
+                               [--eye-correction] /path/to/dataset
+\end{verbatim}
+
+\subsubsection*{GUI webcam}
+
+After the classifiers have been trained, you can use them to launch the emotime
+GUI\@. The GUI uses the webcam to  detect emotions.
+
+\begin{verbatim}
+
+python gui.py --cfg dataset.cfg --mode svm [--eye-correction]\
+                                            /path/to/dataset
+\end{verbatim}
