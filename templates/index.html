@@ -56,7 +56,7 @@
 
     <div class="container">
         Feel Emotions Here:
-            <div id="webcam"></div>
+        <div id="webcam"></div>
 
     </div>
 
@@ -68,15 +68,17 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="static/js/vendor/bootstrap.min.js"></script>
-        <script src="static/js/jquery.webcam.js"></script>
         <script src="static/js/main.js"></script>
-        <object width="100" height="100">
-            <param name="movie" value="static/jscam_canvas_only.swf">
-            <embed src="static/jscam_canvas_only.swf" width="100" height="100">
-            </embed>
-        </object>
+            <script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+            <script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+            <script language="JavaScript" src="static/js/scriptcam.js"></script>
+        <script language="JavaScript" src="/static/js/scriptcam.js"></script>
 
 
-
+            <object width="100" height="100">
+                <param name="movie" value="static/scriptcam.swf">
+                <embed src="static/scriptcam.swf" width="100" height="100">
+                </embed>
+            </object>
     </body>
 </html>
