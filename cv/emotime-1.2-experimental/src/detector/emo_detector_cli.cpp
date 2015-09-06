@@ -137,7 +137,7 @@ int main(int argc, const char *argv[]) {
         Mat features;
         bool canPreprocess = preprocessor->preprocess(img, features);
         if (!canPreprocess) {
-          cerr << "ERR: Cannot preprocess this image '" << infile << "'" << endl;
+          cout << "ERR: Cannot preprocess this image '" << infile << "'" << endl;
           continue;
         }
         pair<Emotion,float> prediction = emodetector->predict(features);

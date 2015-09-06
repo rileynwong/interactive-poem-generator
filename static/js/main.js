@@ -21,5 +21,5 @@ Webcam.on("live", function() {
 
 window.setInterval(function(){
     take_snapshot();
-}, 1000);
+}, 2000);
 });

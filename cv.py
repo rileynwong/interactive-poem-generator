@@ -34,14 +34,17 @@ class EmotionRecognizer:
 
         cmd.stdin.write(filepath + '\n')
         cmd.stdout.readline()  # Processing <filepath>
-        result = timeout(cmd.stdout.readline, timeout_duration=1)
-        if result is not None:
-            # map the raw result to a polarity score
-            result = result.replace('\n', '')
-            result = result[result.find(': ') + 2:]
-            result = result[:result.find(' ')]
-            result = emotion_to_polarity[result]
-            cmd.stdout.readline()
+        result = cmd.stdout.readline()
+
+        if result.startswith('ERR:'):
+            return None
+
+        # map the raw result to a polarity score
+        result = result.replace('\n', '')
+        result = result[result.find(': ') + 2:]
+        result = result[:result.find(' ')]
+        result = emotion_to_polarity[result]
+        cmd.stdout.readline()
         return result
 
 
@@ -53,19 +56,23 @@ def new_command():
                             stdin=subprocess.PIPE)
 
 
-def timeout(func, timeout_duration):
-    import multiprocessing
+def timeout(func, args=(), kwargs={}, timeout_duration=1, default=None):
+    import signal
 
-    p = multiprocessing.Process(target=func)
-    p.start()
+    class TimeoutError(Exception):
+        pass
 
-    # Wait for 10 seconds or until process finishes
-    p.join(timeout_duration)
+    def handler(signum, frame):
+        raise TimeoutError()
+    # set the timeout handler
+    signal.signal(signal.SIGALRM, handler)
+    signal.alarm(timeout_duration)
+    try:
+        result = func(*args, **kwargs)
+    except TimeoutError as exc:
+        result = default
+    finally:
+        signal.alarm(0)
 
-    # If thread is still active
-    if p.is_alive():
-        # Terminate
-        p.terminate()
-        p.join()
-        return None
-    return p.name
+    return result
+

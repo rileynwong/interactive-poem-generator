@@ -3,6 +3,7 @@ import ling
 
 from flask import Flask, render_template, Response, request
 import cv
+import os
 
 app = Flask(__name__)
 
@@ -17,18 +18,15 @@ def index():
 @app.route('/image_upload', methods=['POST'])
 def file_upload():
     file = request.files['webcam']
-    path = '.imagepath.jpg'
+    path = os.getcwd() + '/imagepath.jpg'
     file.save(path)
 
     recognizer = cv.EmotionRecognizer()
     score = recognizer.get_emotion_from_image(path)
-    print score
-    return 'OK', 200
+    # update moving avg
+    next_line = ling.get_next_line(score)
+    return next_line, 200
 
-@app.route('/poem')
-def generate_line():
-    # TODO replace dummy val for sentiment
-    return ling.get_next_line(1.0)
 
 if __name__ == '__main__':
     app.run(debug=True)
