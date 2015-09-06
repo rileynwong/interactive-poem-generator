@@ -1,9 +1,7 @@
-#!/usr/bin/env python
-from flask import Flask, render_template, Response
-
-# emulated camera
-from flask import render_template
+import tempfile
 import ling
+
+from flask import Flask, render_template, Response, request
 
 app = Flask(__name__)
 
@@ -14,14 +12,13 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-def gen(camera):
-    """Video streaming generator function."""
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-
+@app.route('/image_upload', methods=['POST'])
+def file_upload():
+    base_64 = request.get_data()
+    temp_file = tempfile.NamedTemporaryFile(mode='w+b', suffix='.jpg')
+    temp_file.write(base_64.decode('base64'))
+    return 'OK', 200
 
 @app.route('/poem')
 def generate_line():
