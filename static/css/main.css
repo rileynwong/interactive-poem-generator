@@ -4,19 +4,41 @@
    Author's custom styles
    ========================================================================== */
 
+#webcam {
+    float: right
+}
 
+.header {
+    padding-left: 150px;
+    margin-top: -50px;
+    position: fixed;
+    background: #fff;
+    padding-top: 30px;
+}
 
+body {
+    font-family: Courier New
+}
 
+.container {
+    padding-left: 95px;
+    padding-top: 30px
+}
 
+#poetry {
+    padding-top: 40px
+}
 
+#webcam {
+    padding-top: 50px;
+    float: right;
+    padding-left: 650px;
+    position: fixed;
+}
 
+.footer {
+    display: block;
+    padding-left: 150px;
+    position: fixed; bottom: 0 
 
-
-
-
-
-
-
-
-
-
+}

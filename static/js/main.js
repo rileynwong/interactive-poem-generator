@@ -38,3 +38,31 @@ jQuery("#webcam").webcam({
         }
     }
 });
+
+//$(document).ready(function() {
+//    setInterval(scrollBottom, 2000);
+//});
+
+function scrollBottom(){
+    $("html, body").animate({ scrollTop: $(document).height() }, "fast");
+}
+
+// send request to server
+// get back a line of poetry
+function poll() {
+    setTimeout(function() {
+        $.ajax({
+            url: "/poem",
+            type: "GET",
+            success: function(data) {
+                console.log(data);
+                scrollBottom();
+            },
+            dataType: "json",
+            complete: poll,
+            timeout: 2000
+        })
+    }, 2000);
+};
+
+poll();
