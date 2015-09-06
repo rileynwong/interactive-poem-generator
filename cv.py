@@ -53,23 +53,19 @@ def new_command():
                             stdin=subprocess.PIPE)
 
 
-def timeout(func, args=(), kwargs={}, timeout_duration=1, default=None):
-    import signal
+def timeout(func, timeout_duration):
+    import multiprocessing
 
-    class TimeoutError(Exception):
-        pass
+    p = multiprocessing.Process(target=func)
+    p.start()
 
-    def handler(signum, frame):
-        raise TimeoutError()
-    # set the timeout handler
-    signal.signal(signal.SIGALRM, handler)
-    signal.alarm(timeout_duration)
-    try:
-        result = func(*args, **kwargs)
-    except TimeoutError as exc:
-        result = default
-    finally:
-        signal.alarm(0)
+    # Wait for 10 seconds or until process finishes
+    p.join(timeout_duration)
 
-    return result
-
+    # If thread is still active
+    if p.is_alive():
+        # Terminate
+        p.terminate()
+        p.join()
+        return None
+    return p.name

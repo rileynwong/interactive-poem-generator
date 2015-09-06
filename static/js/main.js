@@ -1,23 +1,25 @@
-$("#webcam").webcam({
+Webcam.set({
+        width: 600,
+        height: 480,
+        flip_horiz: true,
+    });
+Webcam.attach( '#my_camera' );
 
-    width: 600,
-    height: 600,
-    mode: "save",
-    swffile: "/static/jscam_canvas_only.swf", // canvas only doesn't implement a jpeg encoder, so the file is much smaller
+function take_snapshot() {
+    Webcam.snap( function(data_uri) {
+        // snap complete, image data is in 'data_uri'
+        Webcam.upload( data_uri, '/image_upload', function(code, text) {
+            // Upload complete!
+            // 'code' will be the HTTP response code from the server, e.g. 200
+            // 'text' will be the raw response content
+            console.log(text);
+        } );
 
-	onTick: function() {},
-	onSave: function(data) {
-		console.log('here5678');
-	},
-	onCapture: function() {
-		console.log('here1234');
-	    webcam.save("http://localhost:5000/");
-	    console.log('here139412323')
-	},
-	debug: function() {},
-	onLoad: function() {
-	    window.setInterval(function(){
-	        webcam.capture();
-        }, 2000);
-	},
+    });
+}
+Webcam.on("live", function() {
+
+window.setInterval(function(){
+    take_snapshot();
+}, 1000);
 });

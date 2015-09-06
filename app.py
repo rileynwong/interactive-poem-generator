@@ -16,12 +16,13 @@ def index():
 
 @app.route('/image_upload', methods=['POST'])
 def file_upload():
-    file = request.files
-    path = '.imagepath'
-    file.save()
+    file = request.files['webcam']
+    path = '.imagepath.jpg'
+    file.save(path)
 
     recognizer = cv.EmotionRecognizer()
     score = recognizer.get_emotion_from_image(path)
+    print score
     return 'OK', 200
 
 @app.route('/poem')

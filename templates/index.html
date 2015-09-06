@@ -10,7 +10,6 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <script src="static/js/webcam.js"></script>
         <embed src="static/js/webcam.swf" width="200" height="200">
 
         <link rel="stylesheet" href="static/css/bootstrap.min.css">
@@ -32,18 +31,8 @@
         </div>
     <div class="container">
 
-    <div id="my_camera" style="width:320px; height:240px;"></div>
+    <div id="my_camera"></div>
     <div id="my_result"></div>
-
-    <script language="JavaScript">
-        Webcam.attach( '#my_camera' );
-
-        function take_snapshot() {
-            Webcam.snap( function(data_uri) {
-                document.getElementById('my_result').innerHTML = '<img src="'+data_uri+'"/>';
-            } );
-        }
-    </script>
 
     <a href="javascript:void(take_snapshot())"></a>
 
@@ -61,6 +50,8 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="static/js/vendor/bootstrap.min.js"></script>
+            <script src="static/js/webcam.js"></script>
+        <script src="static/js/main.js"></script>
 
     </body>
 </html>
