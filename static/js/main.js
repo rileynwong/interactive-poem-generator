@@ -39,12 +39,12 @@ jQuery("#webcam").webcam({
     }
 });
 
-//$(document).ready(function() {
-//    setInterval(scrollBottom, 2000);
-//});
-
 function scrollBottom(){
     $("html, body").animate({ scrollTop: $(document).height() }, "fast");
+}
+
+function appendLine(text) {
+    $("#poetry").append(text + "<br>");
 }
 
 // send request to server
@@ -55,10 +55,9 @@ function poll() {
             url: "/poem",
             type: "GET",
             success: function(data) {
-                console.log(data);
+                appendLine(data);
                 scrollBottom();
             },
-            dataType: "json",
             complete: poll,
             timeout: 2000
         })
@@ -66,3 +65,4 @@ function poll() {
 };
 
 poll();
+
