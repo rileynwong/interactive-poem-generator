@@ -2,7 +2,6 @@
 from flask import Flask, render_template, Response
 
 # emulated camera
-from camera import Camera
 from flask import render_template
 
 app = Flask(__name__)
